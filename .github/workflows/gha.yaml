@@ -1,0 +1,35 @@
+name: Validate and Merge
+on:
+  pull_request:
+    branches:
+    - master
+jobs:
+#  lintAllTheThings:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v1
+#    - name: yaml-lint
+#      uses: ibiqlik/action-yamllint@v3
+#      with: 
+#        config_file: .github/.yamllint-config.yaml
+  validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Validate Kubernetes Manifests
+        uses: andloh/actions-k8s-manifests-validate-kubeval@v1.0.6
+        with:
+          files: .
+          token: ${{ secrets.GITHUB_TOKEN }}
+          openshift: true
+          comment: true
+          ignored_filename_patterns: gha.yaml
+  approve-and-merge:
+    needs: [validation]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: ridedott/merge-me-action@v1
+      name: Approve and Merge
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_LOGIN: andloh

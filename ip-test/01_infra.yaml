@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openshift.io/description: "Managed-By: GitOps. https://github.com/cetemp/k8s-applications/tree/environment_at/at-ip-test-web"
+    openshift.io/requester: argocd
+  labels:
+    app.kubernetes.io/managed-by: "GitOps"
+  name: at-ip-test-web
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: system:image-pullers
+  namespace: at-ip-test-web
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:image-puller
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:serviceaccounts:at-ip-test-web
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: system:image-builders
+  namespace: at-ip-test-web
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:image-builder
+subjects:
+- kind: ServiceAccount
+  name: builder
+  namespace: at-ip-test-web
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: system:deployers
+  namespace: at-ip-test-web
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:deployer
+subjects:
+- kind: ServiceAccount
+  name: deployer
+  namespace: at-ip-test-web
+---
+# Multitenancy
+
+# EgressRules:
+
+apiVersion: network.openshift.io/v1
+kind: EgressNetworkPolicy
+metadata:
+  name: egress-network-policy-at-ip-test-web
+spec:
+  egress:
+    - to:
+        dnsName: ip-activemq-jdbc-amq-tcp-ssl-at-activemq-jdbc.apps.at.cetemp.com
+      type: Allow
+    - to:
+        dnsName: oidc-intern.apps.at.cetemp.com
+      type: Allow
+    - to:
+        cidrSelector: 0.0.0.0/0
+      type: Deny
+---
+# IngressRules:
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-same-namespace
+  namespace: at-ip-test-web
+spec:
+  ingress:
+  - from:
+    - podSelector: {}
+  podSelector: null
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-label-access-to-all-namespaces
+  namespace: at-ip-test-web
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          networkpolicy.at.cetemp.com/access-to-all-namespaces: enabled
+  podSelector: null

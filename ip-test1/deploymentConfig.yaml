@@ -1,0 +1,68 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+  labels:
+    app: ip-test1-sms
+  name: ip-test1-sms
+  namespace: ip-test1-ip-test1
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: ip-test1-sms
+    deploymentconfig: ip-test1-sms
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+      labels:
+        app: ip-test1-sms
+        deploymentconfig: ip-test1-sms
+    spec:
+      containers:
+        - env:
+            - name: TZ
+              value: Europe/Oslo
+          image: docker-registry.default.svc:5000/ip-test1-ip-test1/ip-test1-sms@sha256:9a18fd2699faa3b1c302db4d1dbe73434889cb5db0107535c473c7d535abffb9
+          imagePullPolicy: Always
+          name: ip-test1-sms
+          ports:
+            - containerPort: 8778
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /deployments/config
+              name: volume-mzvkk
+            - mountPath: /etc/secrets
+              name: volume-e0v9b
+              readOnly: true
+            - mountPath: /etc/keystore
+              name: volume-6ednc
+              readOnly: true
+      restartPolicy: Always
+      securityContext: {}
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: ip-test1-sms-config
+          name: volume-mzvkk
+        - name: volume-e0v9b
+          secret:
+            defaultMode: 420
+            secretName: ip-test1-sms-secret
+        - name: volume-6ednc
+          secret:
+            defaultMode: 420
+            secretName: ip-test1-sms-keystore
