@@ -85,11 +85,11 @@ NetworkPolicy
 # Check That API Object exist
 for argoapp in $ARGO_APPS; do
     for kind in ${checkApiKinds[@]}; do
-        if ! grep -q "$kind" "$argoapp/$INFRA_FILE_NAME"; then
+        if ! grep -wq "$kind" "$argoapp/$INFRA_FILE_NAME"; then
             echo "Required API $kind does not exist in file $argoapp/$INFRA_FILE_NAME"
             exitCodeAPIObject=1
             fi
-        if  checkOnlyInInfraFile=$(grep -rn --exclude=$INFRA_FILE_NAME "$kind" $argoapp/); then
+        if  checkOnlyInInfraFile=$(grep -wrn --exclude=$INFRA_FILE_NAME "$kind" $argoapp/); then
             echo "Please move $kind api definition into the $argoapp/$INFRA_FILE_NAME"
             echo DEBUG: $checkOnlyInInfraFile
             exitCodeOnlyInInfraFile=1
