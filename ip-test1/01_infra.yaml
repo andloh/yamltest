@@ -17,7 +17,6 @@ subjects:
   kind: Group
   name: system:serviceaccounts:at-ip-test1-web
 ---
-  name: system:image-builders
   namespace: at-ip-test1-web
 roleRef:
   apiGroup: rbac.authorization.k8s.io
