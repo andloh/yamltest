@@ -15,6 +15,6 @@ jobs:
     steps:
       - uses: mikefarah/yq@3.4.1
       - name: Run Script
-        run: ./.github/script/compliance-mt.sh
+        run: .github/script/compliance-mt.sh
         env: 
           GITHUB_BASE_REF: ${{ secrets.GITHUB_BASE_REF }}
