@@ -1,6 +1,4 @@
 apiVersion: v1
-kind: Namespace1
-metadata:
   annotations:
     openshift.io/description: "Managed-By: GitOps. https://github.com/cetemp/k8s-applications/tree/environment_at/at-ip-test-web"
     openshift.io/requester: argocd
