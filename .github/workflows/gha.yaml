@@ -1,35 +1,40 @@
-name: Validate and Merge
+name: Compliance and Multitenancy
 on:
+  push:
+    branches:
+      - environment*
   pull_request:
     branches:
-    - master
+      - environment*
+    paths-ignore: 
+    - '**/README.md'
+    - 'README.md'
 jobs:
-#  lintAllTheThings:
-#    runs-on: ubuntu-latest
-#    steps:
-#    - uses: actions/checkout@v1
-#    - name: yaml-lint
-#      uses: ibiqlik/action-yamllint@v3
-#      with: 
-#        config_file: .github/.yamllint-config.yaml
-  validation:
+  tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Validate Kubernetes Manifests
-        uses: andloh/actions-k8s-manifests-validate-kubeval@v1.0.6
-        with:
-          files: .
-          token: ${{ secrets.GITHUB_TOKEN }}
-          openshift: true
-          comment: true
-          ignored_filename_patterns: gha.yaml
-  approve-and-merge:
-    needs: [validation]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: ridedott/merge-me-action@v1
-      name: Approve and Merge
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_LOGIN: andloh
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install yq
+        run: |
+           sudo wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64
+           sudo chmod +x /usr/local/bin/yq
+      - name: Run Script
+        run: ./compliance-mt.sh
+        env: 
+          GITHUB_BASE_REF: ${{ secrets.GITHUB_BASE_REF }}
+      - name: Display Output in PR
+        if: always()
+        run: |
+          GIT_COMMENT="## ⚠ [Compliance and Multitenancy tests] Validation Failed
+          <details><summary><code>detail</code></summary>
+          \`\`\`
+          $(echo "${OUTPUT}")
+          \`\`\`
+          </details>
+          "
+
+          # comment to github
+          PAYLOAD=$(echo '{}' | jq --arg body "${GIT_COMMENT}" '.body = $body')
+          COMMENTS_URL=$(cat ${GITHUB_EVENT_PATH} | jq -r .pull_request.comments_url)
+          curl -sSv -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${PAYLOAD}" "${COMMENTS_URL}" >/dev/null
