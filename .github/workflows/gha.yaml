@@ -1,4 +1,4 @@
-name: Run Compliance and Multitenancy tests
+name: Compliance and Multitenancy
 on:
   push:
     branches:
@@ -10,7 +10,7 @@ on:
     - '**/README.md'
     - 'README.md'
 jobs:
-  compliance-multitenancy-tests:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,3 +23,18 @@ jobs:
         run: ./compliance-mt.sh
         env: 
           GITHUB_BASE_REF: ${{ secrets.GITHUB_BASE_REF }}
+      - name: Display Output in PR
+        if: always()
+        run: |
+          GIT_COMMENT="## ⚠ [Compliance and Multitenancy tests] Validation Failed
+          <details><summary><code>detail</code></summary>
+          \`\`\`
+          $(echo "${OUTPUT}")
+          \`\`\`
+          </details>
+          "
+
+          # comment to github
+          PAYLOAD=$(echo '{}' | jq --arg body "${GIT_COMMENT}" '.body = $body')
+          COMMENTS_URL=$(cat ${GITHUB_EVENT_PATH} | jq -r .pull_request.comments_url)
+          curl -sSv -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${PAYLOAD}" "${COMMENTS_URL}" >/dev/null
