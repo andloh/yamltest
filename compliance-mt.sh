@@ -3,6 +3,8 @@
 # Determine Environment #
 #########################
 
+echo ${GITHUB_BASE_REF}
+
 # Override
 GITHUB_BASE_REF="${GITHUB_BASE_REF:=environment_at}"
 #GITHUB_BASE_REF=environment_at
