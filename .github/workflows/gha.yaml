@@ -1,4 +1,4 @@
-name: Run Compliance and Multitenancy tests
+name: Compliance and Multitenancy
 on:
   push:
     branches:
