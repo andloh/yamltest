@@ -13,7 +13,7 @@ jobs:
   compliance-multitenancy-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: mikefarah/yq@v3.4.1
+      - uses: mikefarah/yq@3.4.1
       - name: Run Script
         run: ./.github/script/compliance-mt.sh
         env: 
