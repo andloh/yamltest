@@ -15,7 +15,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: mikefarah/yq@3.4.1
+      - name: Install yq
+        run: |
+           sudo wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64
+           sudo chmod +x /usr/local/bin/yq
       - name: Run Script
         run: .github/script/compliance-mt.sh
         env: 
