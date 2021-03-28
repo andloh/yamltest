@@ -7,7 +7,7 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: "GitOps"
   name: at-ip-test-web
-  #trigg122w
+  #trigg122wwww
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
