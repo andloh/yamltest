@@ -37,4 +37,4 @@ jobs:
           # comment to github
           PAYLOAD=$(echo '{}' | jq --arg body "${GIT_COMMENT}" '.body = $body')
           COMMENTS_URL=$(cat ${GITHUB_EVENT_PATH} | jq -r .pull_request.comments_url)
-          curl -sS -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${PAYLOAD}" "${COMMENTS_URL}" >/dev/null
+          curl -sSv -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${PAYLOAD}" "${COMMENTS_URL}" >/dev/null
