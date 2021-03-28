@@ -1,8 +1,12 @@
 name: Run Compliance and Multitenancy tests
-on: [ pull_request, push]
-  branches:
-  - environment*
-  paths-ignore: 
+on:
+  push:
+    branches:
+      - environment*
+  pull_request:
+    branches:
+      - environment*
+    paths-ignore: 
     - '**/README.md'
     - 'README.md'
 jobs:
