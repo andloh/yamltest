@@ -1,5 +1,6 @@
+# THIS FILE IS MANAGED BY GITOPS - https://github.com/domstolene/k8s-applications/tree/environment_at/ip-test/01_infra.yaml
 apiVersion: v1
-kind: Namespace1
+kind: Namespace
 metadata:
   annotations:
     openshift.io/description: "Managed-By: GitOps. https://github.com/cetemp/k8s-applications/tree/environment_at/at-ip-test-web"

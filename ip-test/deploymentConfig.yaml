@@ -1,3 +1,4 @@
+# THIS FILE IS MANAGED BY GITOPS - https://github.com/domstolene/k8s-applications/tree/environment_at/ip-test/deploymentConfig.yaml
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
@@ -7,7 +8,7 @@ metadata:
   name: ip-test-sms
   namespace: ip-test-ip-test
 spec:
-  replicas: 1
+  replicas: 19
   revisionHistoryLimit: 10
   selector:
     app: ip-test-sms
