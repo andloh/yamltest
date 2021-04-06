@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# Override
+# Find Files
 files=`find * -name *.yaml | grep -v "__init__"`
 
-for file in $files; do sed -i "1i # THIS FILE IS MANAGED BY GITOPS - https://github.com/domstolene/k8s-applications/tree/${GITHUB_BASE_REF}/$file" $file; done
+# Comment
+comment="# THIS FILE IS MANAGED BY GITOPS - https://github.com/domstolene/k8s-applications/tree/${GITHUB_BASE_REF}"
+
+for file in $files; do grep -q "$comment/$file" $file || sed -i "1i $comment/$file" $file; done
