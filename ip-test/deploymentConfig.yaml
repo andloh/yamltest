@@ -1,3 +1,4 @@
+# THIS FILE IS MANAGED BY GITOPS - https://github.com/domstolene/k8s-applications/tree/environment_at/ip-test/deploymentConfig.yaml
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:

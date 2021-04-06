@@ -1,3 +1,4 @@
+# THIS FILE IS MANAGED BY GITOPS - https://github.com/domstolene/k8s-applications/tree/environment_at/_argocd-applications/applications/ip-test/application.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
