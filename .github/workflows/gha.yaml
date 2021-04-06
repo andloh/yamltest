@@ -23,18 +23,12 @@ jobs:
         run: ./compliance-mt.sh
         env: 
           GITHUB_BASE_REF: ${{ secrets.GITHUB_BASE_REF }}
-      - name: Display Output in PR
-        if: always()
-        run: |
-          GIT_COMMENT="## ⚠ [Compliance and Multitenancy tests] Validation Failed
-          <details><summary><code>detail</code></summary>
-          \`\`\`
-          $(echo "${OUTPUT}")
-          \`\`\`
-          </details>
-          "
-
-          # comment to github
-          PAYLOAD=$(echo '{}' | jq --arg body "${GIT_COMMENT}" '.body = $body')
-          COMMENTS_URL=$(cat ${GITHUB_EVENT_PATH} | jq -r .pull_request.comments_url)
-          curl -sSv -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data "${PAYLOAD}" "${COMMENTS_URL}" >/dev/null
+      - name: Apply Gitops Label
+        run: ./comment.sh
+        env: 
+          GITHUB_BASE_REF: ${{ secrets.GITHUB_BASE_REF }}
+      - name: Commit Missing GitOps labels if any
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply Missing GitOps Labels
+    
