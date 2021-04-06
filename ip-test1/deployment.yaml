@@ -1,3 +1,4 @@
+# THIS FILE IS MANAGED BY GITOPS - https://github.com/domstolene/k8s-applications/tree/environment_at/ip-test1/deployment.yaml
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
